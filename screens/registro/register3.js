@@ -1,16 +1,25 @@
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from "react-native";
 import Headers from "../../components/header";
 import styles from "../../styles/login_style";
 import Input from "../../components/inputs";
-import React, { useState} from "react";
-
 
 export default function RegisterScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     if (!username.trim() || !password.trim() || !confirm.trim()) {
       Alert.alert("Campos incompletos", "Por favor llena todos los campos.");
       return;
@@ -21,50 +30,78 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
-    Alert.alert("Cuenta creada", "Tu cuenta ha sido registrada exitosamente.", [
-      {
-        text: "OK",
-        onPress: () => navigation.navigate("Login"),
-      },
-    ]);
+    try {
+      const response = await fetch("http://192.168.1.65:3000/api/register3", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        Alert.alert("Error", data.message || "No se pudo registrar el usuario.");
+        return;
+      }
+
+      Alert.alert("✅ Éxito", data.message, [
+        { text: "OK", onPress: () => navigation.navigate("Login") },
+      ]);
+    } catch (error) {
+      console.error("❌ Error de conexión:", error);
+      Alert.alert("Error", "No se pudo conectar con el servidor.");
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.contenedor}>
-        <Headers titulo="Registrar Usuario" />
+    <KeyboardAvoidingView
+      style={[{ flex: 1, backgroundColor: "#757575c7" }]}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.contenedor}>
+            <Headers titulo="Registrar Usuario" />
 
-        <Input
-          title="Nombre de Usuario"
-          value={username}
-          onChangeText={setUsername}
-        />
+            <Input
+              title="Nombre de Usuario"
+              value={username}
+              onChangeText={setUsername}
+            />
 
-        <Input
-          title="Ingrese la Contraseña"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-        />
+            <Input
+              title="Ingrese la Contraseña"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry={true}
+            />
 
-        <Input
-          title="Verifique la Contraseña"
-          value={confirm}
-          onChangeText={setConfirm}
-          secureTextEntry={true}
-        />
+            <Input
+              title="Verifique la Contraseña"
+              value={confirm}
+              onChangeText={setConfirm}
+              secureTextEntry={true}
+            />
 
-        <TouchableOpacity style={styles.boton_ingresar} onPress={handleFinish}>
-          <Text style={styles.texto_boton}>Finalizar</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.boton_ingresar}
+              onPress={handleFinish}
+            >
+              <Text style={styles.texto_boton}>Finalizar</Text>
+            </TouchableOpacity>
 
-        <View style={styles.nuevo_usuario}>
-          <Text>¿Ya tienes cuenta?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-            <Text style={styles.boton_registrarse}> Ingresa aqui!</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </View>
+            <View style={styles.nuevo_usuario}>
+              <Text>¿Ya tienes cuenta?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                <Text style={styles.boton_registrarse}> Ingresa aquí!</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }

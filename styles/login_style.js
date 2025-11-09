@@ -29,7 +29,7 @@ export default StyleSheet.create({
     color: "#FFFFFF",
     paddingVertical: 10,
     paddingHorizontal: 50,
-    borderRadius: 40,
+    borderRadius: 10,
     alignSelf: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },

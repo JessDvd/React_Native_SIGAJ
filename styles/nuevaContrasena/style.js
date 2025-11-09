@@ -1,0 +1,88 @@
+export default {
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 25,
+    width: "100%",
+    maxWidth: 380,
+    borderColor: "#27646B",
+    borderWidth: 2,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#27646B",
+    textAlign: "center",
+    marginBottom: 10,
+  },
+  subtitle: {
+    textAlign: "center",
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#27646B",
+    paddingVertical: 12,
+    borderRadius: 10,
+    marginTop: 15,
+  },
+  buttonText: {
+    color: "#fff",
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+
+  // 🎯 Modal estilos
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContainer: {
+    width: "80%",
+    backgroundColor: "#fff",
+    borderRadius: 15,
+    padding: 25,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#27646B",
+    marginBottom: 10,
+  },
+  modalText: {
+    textAlign: "center",
+    fontSize: 15,
+    color: "#333",
+    marginBottom: 20,
+  },
+  modalButton: {
+    backgroundColor: "#27646B",
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+  },
+  modalButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+};

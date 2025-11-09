@@ -1,3 +1,4 @@
+import { Ionicons } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -61,7 +62,7 @@ export default function Mensajeria({ nombreUser = "JessDvd" }) {
           </View>
 
           <View style={Styles.container_for}>
-            <AdjuntarArchivos/>
+            <AdjuntarArchivos />
           </View>
 
           <View style={Styles.container_button_group}>
@@ -69,6 +70,7 @@ export default function Mensajeria({ nombreUser = "JessDvd" }) {
               style={[Styles.button_descripcion, Styles.buttonBorrar]}
               onPress={handleBorrar}
             >
+              <Ionicons name="trash-outline" size={18} color="#fff" />
               <Text style={Styles.buttonText}>Borrar</Text>
             </TouchableOpacity>
 
@@ -76,6 +78,7 @@ export default function Mensajeria({ nombreUser = "JessDvd" }) {
               style={[Styles.button_descripcion, Styles.buttonEnviar]}
               onPress={handleEnviar}
             >
+              <Ionicons name="send-outline" size={18} color="#fff" />
               <Text style={Styles.buttonText}>Enviar</Text>
             </TouchableOpacity>
           </View>

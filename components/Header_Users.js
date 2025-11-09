@@ -54,12 +54,18 @@ export default function Header_User({
               <Text style={Styles.menuText}>Consultar archivos</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={Styles.menuItem}>
+            <TouchableOpacity
+              style={Styles.menuItem}
+              onPress={() => navigation.navigate("Contacto")}
+            >
               <Entypo name="phone" size={22} color="#27646B" />
               <Text style={Styles.menuText}>Contactar administrador</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity style={Styles.menuItem}>
+            <TouchableOpacity
+              style={Styles.menuItem}
+              onPress={() => navigation.navigate("CambiarContrasena")}
+            >
               <MaterialIcons name="lock" size={22} color="#27646B" />
               <Text style={Styles.menuText}>Cambiar contraseña</Text>
             </TouchableOpacity>

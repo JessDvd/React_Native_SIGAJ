@@ -13,7 +13,7 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingVertical: 10,
-    backgroundColor: "#27646B",
+    backgroundColor: "#07394A",
     width: "100%",
     maxWidth: 400,
   },
@@ -23,7 +23,7 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginLeft: 15,
-    maxWidth: "80%",
+    maxWidth: "100%",
   },
 
   menu: {
@@ -76,7 +76,7 @@ export default StyleSheet.create({
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "transparent",
     borderRadius: 25,
     paddingHorizontal: 18,
     width: "100%",
@@ -113,7 +113,7 @@ export default StyleSheet.create({
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "transparent",
     borderRadius: 25,
     paddingHorizontal: 18,
     width: "100%",
@@ -250,7 +250,7 @@ export default StyleSheet.create({
     alignSelf: "center",
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "transparent",
     borderRadius: 25,
     paddingHorizontal: 18,
     width: "100%",
@@ -258,6 +258,7 @@ export default StyleSheet.create({
 
   container_descripcion: {
     borderWidth: 2,
+    backgroundColor: "transparent",
     borderColor: "#27646B",
     borderRadius: 10,
     maxWidth: 400,
