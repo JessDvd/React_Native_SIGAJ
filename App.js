@@ -12,6 +12,7 @@ import Contacto from "./screens/contactar_administrador/contacto";
 import CambiarContrasena from "./screens/cambiar_contrasena/nueva_contrasena";
 import Compartir from "./components/acciones/compartir";
 import AdministradorScreen from "./screens/admin/administrador";
+import OlvidarContrasena from "./screens/contrasenaOlvido";
 
 const stack = createNativeStackNavigator();
 
@@ -79,6 +80,12 @@ export default function App() {
         <stack.Screen
           name="Administrador"
           component={AdministradorScreen}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="OlvidarContrasena"
+          component={OlvidarContrasena}
           options={{ headerShown: false }}
         />
       </stack.Navigator>

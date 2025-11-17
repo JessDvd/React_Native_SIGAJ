@@ -10,7 +10,6 @@ export default StyleSheet.create({
   },
 
   contenedor: {
-    //Revisar Aqui
     backgroundColor: "#fff",
     borderRadius: 20,
     borderColor: "#27646B",

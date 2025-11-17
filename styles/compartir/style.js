@@ -3,13 +3,12 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "transparent", // sin fondo negro
+    backgroundColor: "transparent", 
     justifyContent: "center",
     alignItems: "center",
   },
   modalContainer: {
-    // Efecto “vidrio esmerilado”
-    backgroundColor: "rgba(255, 255, 255, 0.25)", // más transparente
+    backgroundColor: "rgba(255, 255, 255, 0.25)",
     borderRadius: 20,
     padding: 20,
     width: "85%",
@@ -19,7 +18,7 @@ export default StyleSheet.create({
     shadowOpacity: 0.2,
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 10,
-    backdropFilter: "blur(10px)", // ⚠️ Solo funciona en web. Para móvil usa BlurView (ver nota abajo)
+    backdropFilter: "blur(10px)",
   },
   title: {
     fontSize: 18,

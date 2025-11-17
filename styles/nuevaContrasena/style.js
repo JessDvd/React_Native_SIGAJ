@@ -44,7 +44,6 @@ export default {
     fontWeight: "bold",
   },
 
-  // 🎯 Modal estilos
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0, 0, 0, 0.4)",

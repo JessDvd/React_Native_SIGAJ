@@ -3,8 +3,6 @@ import { pool } from "../db.js";
 
 const router = express.Router();
 
-
-// 🟢 LOGIN
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -15,7 +13,7 @@ router.post("/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      console.log(`⚠️ Credenciales inválidas para usuario: ${username} ${password}`);
+      console.log(`Credenciales inválidas para usuario: ${username} ${password}`);
       return res.status(401).json({ message: "Credenciales inválidas", user: null });
     }
 
@@ -30,20 +28,18 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("❌ Error en el servidor:", err);
+    console.error("Error en el servidor:", err);
     return res.status(500).json({ message: "Error en el servidor", user: null });
   }
 });
 
-
-// 🟢 REGISTRO - Paso 1: Datos personales
 router.post("/register/personal", async (req, res) => {
   const { username, paterno, materno, email, user, password } = req.body;
 
-  console.log("📩 Datos recibidos:", req.body);
+  console.log("Datos recibidos:", req.body);
 
   if (!username || !paterno || !materno || !email || !user || !password) {
-    console.log("❌ Faltan campos:", { username, paterno, materno, email, user, password });
+    console.log("Faltan campos:", { username, paterno, materno, email, user, password });
     return res.status(400).json({ message: "Faltan campos obligatorios" });
   }
 
@@ -58,17 +54,15 @@ router.post("/register/personal", async (req, res) => {
       user: result.rows[0],
     });
   } catch (err) {
-    console.error("❌ Error al registrar:", err);
+    console.error("Error al registrar:", err);
     res.status(500).json({ message: "Error al registrar usuario" });
   }
 });
 
-
-// 🟢 REGISTRO - Paso 2: Datos adicionales
 router.post("/register2", async (req, res) => {
   const { curp, rfc, num, dep } = req.body;
 
-  console.log("📩 Datos recibidos en /register/detalles:", req.body);
+  console.log("Datos recibidos en /register/detalles:", req.body);
 
   try {
     if (!curp || !rfc || !num || !dep) {
@@ -87,7 +81,7 @@ router.post("/register2", async (req, res) => {
 
     const nuevoUsuario = result.rows[0];
     return res.status(201).json({
-      message: "Usuario registrado correctamente (Paso 2)",
+      message: "Usuario registrado correctamente",
       user: {
         id: nuevoUsuario.id,
         curp: nuevoUsuario.curp,
@@ -98,29 +92,26 @@ router.post("/register2", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error al registrar usuario:", error);
+    console.error("Error al registrar usuario:", error);
     res.status(500).json({ message: "Error en el servidor." });
   }
 });
 
-// 🟢 REGISTRO - Paso 3: Nombre de usuario y contraseña
 router.post("/register3", async (req, res) => {
   const { username, password } = req.body;
 
-  console.log("📩 Datos recibidos en /register3:", req.body);
+  console.log("Datos recibidos en /register3:", req.body);
 
   if (!username || !password) {
     return res.status(400).json({ message: "Faltan campos obligatorios" });
   }
 
   try {
-    // Validar que no exista el username
     const checkUser = await pool.query("SELECT * FROM usuarios WHERE username = $1", [username]);
     if (checkUser.rows.length > 0) {
       return res.status(409).json({ message: "El nombre de usuario ya existe." });
     }
 
-    // Guardar usuario con contraseña (aquí podrías encriptar más adelante)
     const result = await pool.query(
       "UPDATE usuarios SET username = $1, password = $2 WHERE username IS NULL RETURNING *",
       [username, password]
@@ -131,15 +122,47 @@ router.post("/register3", async (req, res) => {
     }
 
     return res.json({
-      message: "Cuenta creada correctamente (Paso 3)",
+      message: "Cuenta creada correctamente",
       user: result.rows[0],
     });
   } catch (err) {
-    console.error("❌ Error en /register3:", err);
+    console.error("Error en /register3:", err);
     res.status(500).json({ message: "Error al registrar el usuario." });
   }
 });
 
+router.post("/contrasenaOlvido", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: "El correo es obligatorio." });
+  }
+
+  try {
+    // Buscar usuario por email
+    const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [email]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ message: "No existe un usuario con ese correo." });
+    }
+
+    const user = result.rows[0];
+
+    // Registrar solicitud en tabla "solicitudes_contrasena"
+    await pool.query(
+      "INSERT INTO solicitudes_contrasena (usuario_id, email) VALUES ($1, $2)",
+      [user.id, email]
+    );
+
+    return res.json({
+      message: "Solicitud enviada correctamente. El administrador recibirá la notificación.",
+    });
+
+  } catch (error) {
+    console.error("Error en /contrasenaOlvido:", error);
+    res.status(500).json({ message: "Error en el servidor" });
+  }
+});
 
 
 export default router;

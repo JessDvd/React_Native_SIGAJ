@@ -17,7 +17,6 @@ export default function CambiarContrasena() {
       return;
     }
 
-    // Aquí puedes colocar la lógica de actualización real
     console.log("Contraseña cambiada");
     setModalVisible(true);
   };
@@ -30,7 +29,8 @@ export default function CambiarContrasena() {
           <Text style={Styles_cotrasena.title}>Cambiar Contraseña</Text>
 
           <Text style={Styles_cotrasena.subtitle}>
-            Actualiza tu contraseña para mantener tu cuenta segura.
+            Por favor, ingrese su nombre de usuario, contraseña antiguo y la
+            nueva con cuidado!{" "}
           </Text>
 
           <Input
@@ -61,8 +61,7 @@ export default function CambiarContrasena() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
-      {/* ✅ Modal de confirmación */}
+      
       <Modal
         visible={modalVisible}
         transparent={true}
@@ -71,7 +70,9 @@ export default function CambiarContrasena() {
       >
         <View style={Styles_cotrasena.overlay}>
           <View style={Styles_cotrasena.modalContainer}>
-            <Text style={Styles_cotrasena.modalTitle}>¡Contraseña cambiada!</Text>
+            <Text style={Styles_cotrasena.modalTitle}>
+              ¡Contraseña cambiada!
+            </Text>
             <Text style={Styles_cotrasena.modalText}>
               Tu contraseña ha sido actualizada correctamente.
             </Text>

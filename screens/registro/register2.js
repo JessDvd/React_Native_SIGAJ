@@ -28,7 +28,7 @@ export default function RegisterScreen({ navigation }) {
     }
 
     try {
-      const response = await fetch("http://192.168.1.65:3000/api/register2", {
+      const response = await fetch("http://192.168.1.66:3000/api/register2", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ curp, rfc, num, dep }),
@@ -45,9 +45,9 @@ export default function RegisterScreen({ navigation }) {
       }
 
       Alert.alert("Éxito", data.message);
-      navigation.navigate("Register3"); // avanzar al siguiente paso
+      navigation.navigate("Register3");
     } catch (error) {
-      console.error("❌ Error de conexión:", error);
+      console.error("Error de conexión:", error);
       Alert.alert("Error", "No se pudo conectar con el servidor.");
     }
   };

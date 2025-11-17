@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-
 import { Text, View, Alert, TouchableOpacity } from "react-native";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Headers from "../components/header";
-
 import styles from "../styles/screen_style";
-
 import Input from "../components/inputs";
 
 export default function LoginScreen({ navigation }) {
@@ -14,18 +11,30 @@ export default function LoginScreen({ navigation }) {
 
   const handleFinish = async () => {
     if (!username.trim() || !password.trim()) {
-      Alert.alert("Campos incompletos", "Por favor llena todos los campos solicitados.");
+      Alert.alert(
+        "Campos incompletos",
+        "Por favor llena todos los campos solicitados."
+      );
       return;
     }
 
     try {
-      const response = await fetch("http://192.168.1.65:3000/api/login", {
+      const response = await fetch("http://192.168.1.66:3000/api/login", {
+        //65 NO BORRAR CAMBIAR IP
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
-      const data = await response.json();
+      const textResponse = await response.text();
+      let data;
+      try {
+        data = JSON.parse(textResponse);
+      } catch {
+        console.error("Respuesta no válida del servidor:", textResponse);
+        Alert.alert("Error", "El servidor devolvió una respuesta inválida.");
+        return;
+      }
 
       if (!response.ok) {
         Alert.alert("Error", data.message || "Credenciales inválidas");
@@ -38,17 +47,12 @@ export default function LoginScreen({ navigation }) {
         return;
       }
 
-      Alert.alert("Éxito", data.message);
+      await AsyncStorage.setItem("userData", JSON.stringify(data.user));
 
-      if (data.user.rol === "consulta") {
-        navigation.navigate("Consulta");
-      } else if (data.user.rol === "editor") {
-        navigation.navigate("Administrador");
-      } else {
-        Alert.alert("Rol desconocido", data.user.rol);
-      }
+      Alert.alert("Éxito", data.message);
+      navigation.navigate("Consulta");
     } catch (error) {
-      console.error(error);
+      console.error("Error de conexión:", error);
       Alert.alert("Error", "No se pudo conectar con el servidor");
     }
   };
@@ -60,23 +64,27 @@ export default function LoginScreen({ navigation }) {
 
         <Input
           value={username}
-          onChangeText={setUsername}
+          onChangeText={(text) => setUsername(text.trim())}
           title="Nombre de Usuario"
         />
 
         <Input
           value={password}
-          onChangeText={setPassword}
+          onChangeText={(text) => setPassword(text.trim())}
           secureTextEntry={true}
           title="Contraseña"
         />
+
         <View style={styles.contenedor_contrasena}>
-          <Text
-            style={styles.texto_olvido}
-            onPress={() => Alert.alert("Olvidaste tu contrasena.")}
+          <TouchableOpacity
+            onPress={() => navigation.navigate("OlvidarContrasena")}
           >
-            ¿Olvidaste tu contraseña?
-          </Text>
+            <Text
+              style={{ marginTop: 10, textAlign: "center" }}
+            >
+              ¿Olvidaste tu contraseña?
+            </Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.boton_ingresar} onPress={handleFinish}>
@@ -86,13 +94,8 @@ export default function LoginScreen({ navigation }) {
         <View style={styles.nuevo_usuario}>
           <Text>¿Usuario Nuevo?</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.boton_registrarse}> Registrate aqui!</Text>
+            <Text style={styles.boton_registrarse}> ¡Regístrate aquí!</Text>
           </TouchableOpacity>
-        </View>
-        <View>
-          <Text onPress={() => navigation.navigate("Consulta")}>
-            Pulsa Aqui para consulta
-          </Text>
         </View>
       </View>
     </View>

@@ -18,6 +18,7 @@ export default StyleSheet.create({
     paddingHorizontal: 25,
     alignItems: "center",
     width: "90%",
+    
     maxWidth: 400,
   },
 

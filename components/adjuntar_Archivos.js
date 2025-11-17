@@ -25,7 +25,7 @@ export default function AdjuntarArchivos() {
   return (
     <View style={Styles.container_inputs}>
       <TouchableOpacity style={Styles.container_textInput} onPress={seleccionarArchivo}>
-        <Text style={Styles.container_textInput}>Pulse aqui para enviar un archivo</Text>
+        <Text style={Styles.container_textInput}>Seleccione archivos a enviar</Text>
       </TouchableOpacity>
 
       {archivo && (
