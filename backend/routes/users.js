@@ -13,8 +13,12 @@ router.post("/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      console.log(`Credenciales inválidas para usuario: ${username} ${password}`);
-      return res.status(401).json({ message: "Credenciales inválidas", user: null });
+      console.log(
+        `Credenciales inválidas para usuario: ${username} ${password}`
+      );
+      return res
+        .status(401)
+        .json({ message: "Credenciales inválidas", user: null });
     }
 
     const user = result.rows[0];
@@ -29,7 +33,9 @@ router.post("/login", async (req, res) => {
     });
   } catch (err) {
     console.error("Error en el servidor:", err);
-    return res.status(500).json({ message: "Error en el servidor", user: null });
+    return res
+      .status(500)
+      .json({ message: "Error en el servidor", user: null });
   }
 });
 
@@ -39,7 +45,14 @@ router.post("/register/personal", async (req, res) => {
   console.log("Datos recibidos:", req.body);
 
   if (!username || !paterno || !materno || !email || !user || !password) {
-    console.log("Faltan campos:", { username, paterno, materno, email, user, password });
+    console.log("Faltan campos:", {
+      username,
+      paterno,
+      materno,
+      email,
+      user,
+      password,
+    });
     return res.status(400).json({ message: "Faltan campos obligatorios" });
   }
 
@@ -66,12 +79,19 @@ router.post("/register2", async (req, res) => {
 
   try {
     if (!curp || !rfc || !num || !dep) {
-      return res.status(400).json({ message: "Todos los campos son obligatorios." });
+      return res
+        .status(400)
+        .json({ message: "Todos los campos son obligatorios." });
     }
 
-    const check = await pool.query("SELECT * FROM usuarios WHERE curp = $1 OR rfc = $2", [curp, rfc]);
+    const check = await pool.query(
+      "SELECT * FROM usuarios WHERE curp = $1 OR rfc = $2",
+      [curp, rfc]
+    );
     if (check.rows.length > 0) {
-      return res.status(409).json({ message: "Ya existe un usuario con ese CURP o RFC." });
+      return res
+        .status(409)
+        .json({ message: "Ya existe un usuario con ese CURP o RFC." });
     }
 
     const result = await pool.query(
@@ -107,9 +127,14 @@ router.post("/register3", async (req, res) => {
   }
 
   try {
-    const checkUser = await pool.query("SELECT * FROM usuarios WHERE username = $1", [username]);
+    const checkUser = await pool.query(
+      "SELECT * FROM usuarios WHERE username = $1",
+      [username]
+    );
     if (checkUser.rows.length > 0) {
-      return res.status(409).json({ message: "El nombre de usuario ya existe." });
+      return res
+        .status(409)
+        .json({ message: "El nombre de usuario ya existe." });
     }
 
     const result = await pool.query(
@@ -118,7 +143,9 @@ router.post("/register3", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "No se encontró un usuario para actualizar." });
+      return res
+        .status(404)
+        .json({ message: "No se encontró un usuario para actualizar." });
     }
 
     return res.json({
@@ -131,6 +158,32 @@ router.post("/register3", async (req, res) => {
   }
 });
 
+router.get("/buscarUsuario", async (req, res) => {
+  const query = req.query.query;
+
+  try {
+    const result = await pool.query(
+      `SELECT id, username, rol, paterno, materno, email, curp, rfc, telefono, departamento
+       FROM usuarios
+       WHERE 
+        username ILIKE $1 || '%'
+        OR paterno ILIKE $1 || '%'
+        OR materno ILIKE $1 || '%'
+        OR email ILIKE $1 || '%'
+        OR curp ILIKE $1 || '%'
+        OR rfc ILIKE $1 || '%'
+        OR departamento ILIKE $1 || '%'
+        OR CAST(id AS TEXT) ILIKE $1 || '%'`,
+      [query]
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.error("Error buscando usuario:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+});
+
 router.post("/contrasenaOlvido", async (req, res) => {
   const { email } = req.body;
 
@@ -140,10 +193,14 @@ router.post("/contrasenaOlvido", async (req, res) => {
 
   try {
     // Buscar usuario por email
-    const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [email]);
+    const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [
+      email,
+    ]);
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "No existe un usuario con ese correo." });
+      return res
+        .status(404)
+        .json({ message: "No existe un usuario con ese correo." });
     }
 
     const user = result.rows[0];
@@ -155,14 +212,13 @@ router.post("/contrasenaOlvido", async (req, res) => {
     );
 
     return res.json({
-      message: "Solicitud enviada correctamente. El administrador recibirá la notificación.",
+      message:
+        "Solicitud enviada correctamente. El administrador recibirá la notificación.",
     });
-
   } catch (error) {
     console.error("Error en /contrasenaOlvido:", error);
     res.status(500).json({ message: "Error en el servidor" });
   }
 });
-
 
 export default router;

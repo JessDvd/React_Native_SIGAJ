@@ -8,7 +8,8 @@ export default StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.25)",
+    // backgroundColor: "rgba(255, 255, 255, 0.25)",
+    backgroundColor: "rgba(255, 255, 255, 0.37)",
     borderRadius: 20,
     padding: 20,
     width: "85%",
@@ -34,7 +35,7 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     color: "#27646B",
-    marginBottom: 5,
+    marginBottom: 10,
   },
   accessBox: {
     borderWidth: 1,
@@ -50,7 +51,6 @@ export default StyleSheet.create({
   fileOptions: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginTop: 15,
   },
   pdfButton: {
     backgroundColor: "#27646B",
@@ -69,7 +69,7 @@ export default StyleSheet.create({
     fontWeight: "bold",
   },
   closeButton: {
-    marginTop: 15,
+    marginTop: 10,
     backgroundColor: "#ccc",
     paddingVertical: 8,
     borderRadius: 8,

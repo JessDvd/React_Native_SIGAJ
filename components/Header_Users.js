@@ -57,7 +57,7 @@ export default function Header_User({ aviso = "" }) {
           },
           {
             icon: <MaterialIcons name="message" size={22} color="#27646B" />,
-            text: "Mensajería general",
+            text: "Mensajería",
             action: () => navigation.navigate("Mensajeria"),
           },
         ];
@@ -117,7 +117,7 @@ export default function Header_User({ aviso = "" }) {
       </TouchableOpacity>
 
       <Text style={Styles.header} numberOfLines={1} ellipsizeMode="tail">
-        {aviso}, {nombre} ({rol})
+        {aviso}, {nombre}
       </Text>
 
       <Modal

@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import Styles from "../styles/consulta.style";
 import ModalCompartir from "./acciones/compartir";
@@ -15,7 +10,7 @@ export default function TablaArchivos({ data = [] }) {
 
   const handleShare = () => {
     console.log("Archivo compartido");
-  }
+  };
 
   return (
     <View style={Styles.container_tabla}>
@@ -38,9 +33,7 @@ export default function TablaArchivos({ data = [] }) {
             <Text style={[Styles.text_tabla, { flex: 2 }]}>{item.usuario}</Text>
 
             <View style={[Styles.acciones_tabla, { flex: 1 }]}>
-              <TouchableOpacity
-                onPress={() => console.log("Compartir", item.id)}
-              >
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <MaterialIcons name="share" size={22} color="#27646B" />
               </TouchableOpacity>
               <TouchableOpacity
@@ -48,16 +41,12 @@ export default function TablaArchivos({ data = [] }) {
               >
                 <MaterialIcons name="file-download" size={22} color="#27646B" />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => setModalVisible(true)}>
-                <MaterialIcons name="open-in-new" size={24} color="#27646B" />
-              </TouchableOpacity>
 
               <ModalCompartir
-              visible={modalVisible}
-              onClose={()=> setModalVisible(false)}
-              onShare={handleShare}
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onShare={handleShare}
               />
-              
             </View>
           </View>
         ))}

@@ -22,7 +22,7 @@ export default function OlvidarContrasena() {
       Alert.alert("Error", "Por favor ingresa tu correo electrónico.");
       return;
     }
-    
+
     try {
       const response = await fetch(
         "http://192.168.1.66:3000/api/contrasenaOlvido",
@@ -67,7 +67,7 @@ export default function OlvidarContrasena() {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.container}>
-          <Text style={styles.logo}>Recuperar contraseña</Text>
+          <Text style={styles.logo}>Recuperar Contraseña</Text>
 
           <Text style={styles.text}>
             Ingresa tu correo electrónico y enviaremos una solicitud al
@@ -109,7 +109,7 @@ export default function OlvidarContrasena() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000000c7",
+    backgroundColor: "#393939c7",
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,

@@ -46,14 +46,12 @@ export default function ModalCompartir({ visible, onClose }) {
 
                 <View style={Styles.fileOptions}>
                   <View style={Styles.fileColumn}>
-                    <Text style={Styles.optionTitle}>Consultar archivos</Text>
                     <TouchableOpacity style={Styles.pdfButton}>
                       <Text style={Styles.buttonText}>PDF</Text>
                     </TouchableOpacity>
                   </View>
 
                   <View style={Styles.fileColumn}>
-                    <Text style={Styles.optionTitle}>Editar archivos</Text>
                     <TouchableOpacity style={Styles.docxButton}>
                       <Text style={Styles.buttonText}>DOCX</Text>
                     </TouchableOpacity>

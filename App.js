@@ -11,7 +11,7 @@ import ListaMensajes from "./screens/lista_mensajes/mensajes";
 import Contacto from "./screens/contactar_administrador/contacto";
 import CambiarContrasena from "./screens/cambiar_contrasena/nueva_contrasena";
 import Compartir from "./components/acciones/compartir";
-import AdministradorScreen from "./screens/admin/administrador";
+import GestionUsuarios from "./screens/admin/gestionUsuarios";
 import OlvidarContrasena from "./screens/contrasenaOlvido";
 
 const stack = createNativeStackNavigator();
@@ -78,8 +78,8 @@ export default function App() {
         />
 
         <stack.Screen
-          name="Administrador"
-          component={AdministradorScreen}
+          name="GestionUsuarios"
+          component={GestionUsuarios}
           options={{ headerShown: false }}
         />
 
