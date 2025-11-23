@@ -117,7 +117,7 @@ export default function Header_User({ aviso = "" }) {
       </TouchableOpacity>
 
       <Text style={Styles.header} numberOfLines={1} ellipsizeMode="tail">
-        {aviso}, {nombre}
+        Hola {nombre}! ({rol})
       </Text>
 
       <Modal

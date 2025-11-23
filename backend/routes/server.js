@@ -14,8 +14,6 @@ app.listen(PORT, "0.0.0.0", () =>
   console.log(`Servidor escuchando en http://192.168.1.66:${PORT}`)
 );
 
-app.get("/ping", (req, res) => {
+app.get("/ping", (res) => {
   res.json({ ok: true });
 });
-
-//('adminPro', 'admin123', 'editor');
