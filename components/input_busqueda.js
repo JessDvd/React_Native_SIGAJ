@@ -14,7 +14,7 @@ export default function Input_Busqueda({ title = "", value, onChangeText }) {
         style={Styles.container_textInput}
         placeholder={title}
         value={value}
-        onChangeText={onChangeText}  // <-- AQUÍ SE SOLUCIONA TODO
+        onChangeText={onChangeText}
       />
     </View>
   );

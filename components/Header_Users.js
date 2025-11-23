@@ -10,7 +10,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Styles from "../styles/consulta.style";
 
-export default function Header_User({ aviso = "" }) {
+export default function Header_User() {
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -30,7 +30,6 @@ export default function Header_User({ aviso = "" }) {
   const rol = userData?.rol || "consulta";
   const nombre = userData?.username || "Invitado";
 
-  // Menú según rol
   const obtenerOpcionesMenu = () => {
     switch (rol.toLowerCase()) {
       case "administrador":
@@ -117,7 +116,7 @@ export default function Header_User({ aviso = "" }) {
       </TouchableOpacity>
 
       <Text style={Styles.header} numberOfLines={1} ellipsizeMode="tail">
-        Hola {nombre}! ({rol})
+        ¡Hola! {nombre} ({rol})
       </Text>
 
       <Modal

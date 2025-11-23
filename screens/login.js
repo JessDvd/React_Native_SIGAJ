@@ -11,39 +11,21 @@ export default function LoginScreen({ navigation }) {
 
   const handleFinish = async () => {
     if (!username.trim() || !password.trim()) {
-      Alert.alert(
-        "Campos incompletos",
-        "Por favor llena todos los campos solicitados."
-      );
+      Alert.alert("SIGAJ", "Ingrese el Nombre de Usuario y Contraseña.");
       return;
     }
 
     try {
       const response = await fetch("http://192.168.1.66:3000/api/login", {
-        //65 NO BORRAR CAMBIAR IP
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
 
-      const textResponse = await response.text();
-      let data;
-      try {
-        data = JSON.parse(textResponse);
-      } catch {
-        console.error("Respuesta no válida del servidor:", textResponse);
-        Alert.alert("Error", "El servidor devolvió una respuesta inválida.");
-        return;
-      }
+      const data = await response.json();
 
       if (!response.ok) {
-        Alert.alert("Error", data.message || "Credenciales inválidas");
-        return;
-      }
-
-      if (!data.user || !data.user.rol) {
-        Alert.alert("Error", "El servidor no devolvió un rol válido.");
-        console.log("Respuesta:", data);
+        Alert.alert("Error", data.message);
         return;
       }
 
@@ -52,8 +34,8 @@ export default function LoginScreen({ navigation }) {
       Alert.alert("Éxito", data.message);
       navigation.navigate("Consulta");
     } catch (error) {
-      console.error("Error de conexión:", error);
-      Alert.alert("Error", "No se pudo conectar con el servidor");
+      console.error("Error de Conexión:", error);
+      Alert.alert("Error", "No se pudo conectar al servidor.");
     }
   };
 
@@ -79,9 +61,7 @@ export default function LoginScreen({ navigation }) {
           <TouchableOpacity
             onPress={() => navigation.navigate("OlvidarContrasena")}
           >
-            <Text
-              style={{ marginTop: 10, textAlign: "center" }}
-            >
+            <Text style={{ marginTop: 10, textAlign: "center" }}>
               ¿Olvidaste tu contraseña?
             </Text>
           </TouchableOpacity>

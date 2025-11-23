@@ -6,22 +6,27 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
+  if (!username || !password) {
+    return res
+      .status(400)
+      .json({ message: "Ingrese el Nombre de Usuario y Contraseña." });
+  }
+
   try {
     const result = await pool.query(
-      "SELECT * FROM usuarios WHERE username = $1 AND password = $2",
-      [username, password]
+      "SELECT * FROM usuarios WHERE username = $1",
+      [username]
     );
 
     if (result.rows.length === 0) {
-      console.log(
-        `Credenciales inválidas para usuario: ${username} ${password}`
-      );
-      return res
-        .status(401)
-        .json({ message: "Credenciales inválidas", user: null });
+      return res.status(404).json({ message: "Nombre de Usuario no Registrado." });
     }
 
     const user = result.rows[0];
+
+    if (user.password !== password) {
+      return res.status(401).json({ message: "Contraseña Incorrecta." });
+    }
 
     return res.json({
       message: "Bienvenido " + user.username,
@@ -31,28 +36,27 @@ router.post("/login", async (req, res) => {
         rol: user.rol,
       },
     });
+
   } catch (err) {
-    console.error("Error en el servidor:", err);
     return res
       .status(500)
       .json({ message: "Error en el servidor", user: null });
   }
 });
 
+
 router.post("/register/personal", async (req, res) => {
   const { username, paterno, materno, email, user, password } = req.body;
 
-  console.log("Datos recibidos:", req.body);
-
   if (!username || !paterno || !materno || !email || !user || !password) {
-    console.log("Faltan campos:", {
-      username,
-      paterno,
-      materno,
-      email,
-      user,
-      password,
-    });
+    // console.log("Faltan campos:", {
+    //   username,
+    //   paterno,
+    //   materno,
+    //   email,
+    //   user,
+    //   password,
+    // });
     return res.status(400).json({ message: "Faltan campos obligatorios" });
   }
 
@@ -205,7 +209,6 @@ router.post("/contrasenaOlvido", async (req, res) => {
 
     const user = result.rows[0];
 
-    // Registrar solicitud en tabla "solicitudes_contrasena"
     await pool.query(
       "INSERT INTO solicitudes_contrasena (usuario_id, email) VALUES ($1, $2)",
       [user.id, email]
