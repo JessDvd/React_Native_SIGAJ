@@ -4,3 +4,60 @@ host    all     all     192.168.1.65/32    md5
 
 ESTE LAN:
 host    all     all     192.168.1.0/24    md5
+
+Estos son los datos para postgresql:
+
+CREATE TABLE usuarios_new (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(60),
+  password VARCHAR(100),
+  rol VARCHAR(30),
+  nombre VARCHAR(60),           
+  paterno VARCHAR(60),
+  materno VARCHAR(60),
+  email VARCHAR(100),
+  curp VARCHAR(18),
+  rfc VARCHAR(13),
+  telefono VARCHAR(15),
+  departamento VARCHAR(50)
+);
+
+SELECT * FROM usuarios
+
+INSERT INTO usuarios (
+  username, password, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento
+) VALUES (
+  'admin',
+  'admin123', 
+  'administrador', 
+  'Administrador',
+  'Principal',
+  'Sistema',
+  'admin@sistema.com',
+  'ADM123456XXX',
+  'ADM010101XXX',
+  '6640000000',
+  'Sistemas'
+);
+
+INSERT INTO usuarios (
+  username, password, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento
+) VALUES (
+  'editor',
+  'editor123', 
+  'editor', 
+  'editor',
+  'Principal',
+  'Sistema',
+  'editor@sistema.com',
+  'edit123456XXX',
+  'edit10101XXX',
+  '6640000002',
+  'Sistemas'
+);
+
+Mi configuracion de postgresql ->
+
+hostname: localhost //CAMBIAR
+port: 5432
+username: postgres
