@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import AdjuntarArchivos from "../../components/adjuntar_Archivos";
 export default function Consulta() {
   const [asunto, setAsunto] = useState("");
   const [descripcion, setDescripcion] = useState("");
-  const [archivo, setArchivo] = useState("");
+  const [setArchivo] = useState("");
 
   const handleBorrar = () => {
     console.log("Borrar mensaje");

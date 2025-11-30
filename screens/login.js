@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Text, View, Alert, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Headers from "../components/header";
@@ -16,7 +16,7 @@ export default function LoginScreen({ navigation }) {
     }
 
     try {
-      const response = await fetch("http://192.168.1.66:3000/api/login", {
+      const response = await fetch("http://192.168.1.65:3000/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
@@ -25,13 +25,13 @@ export default function LoginScreen({ navigation }) {
       const data = await response.json();
 
       if (!response.ok) {
-        Alert.alert("Error", data.message);
+        Alert.alert("SIGAJ", data.message);
         return;
       }
 
       await AsyncStorage.setItem("userData", JSON.stringify(data.user));
 
-      Alert.alert("Éxito", data.message);
+      Alert.alert("SIGAJ", data.message);
       navigation.navigate("Consulta");
     } catch (error) {
       console.error("Error de Conexión:", error);

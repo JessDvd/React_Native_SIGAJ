@@ -19,7 +19,9 @@ router.post("/login", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ message: "Nombre de Usuario no Registrado." });
+      return res
+        .status(404)
+        .json({ message: "Nombre de Usuario no Registrado." });
     }
 
     const user = result.rows[0];
@@ -36,7 +38,6 @@ router.post("/login", async (req, res) => {
         rol: user.rol,
       },
     });
-
   } catch (err) {
     return res
       .status(500)
@@ -44,121 +45,74 @@ router.post("/login", async (req, res) => {
   }
 });
 
+router.post("/register", async (req, res) => {
+  const {
+    nombre,
+    paterno,
+    materno,
+    email,
+    curp,
+    rfc,
+    telefono,
+    departamento,
+    username,
+    password,
+  } = req.body;
 
-router.post("/register/personal", async (req, res) => {
-  const { username, paterno, materno, email, user, password } = req.body;
-
-  if (!username || !paterno || !materno || !email || !user || !password) {
-    // console.log("Faltan campos:", {
-    //   username,
-    //   paterno,
-    //   materno,
-    //   email,
-    //   user,
-    //   password,
-    // });
+  if (
+    !nombre ||
+    !paterno ||
+    !materno ||
+    !email ||
+    !curp ||
+    !rfc ||
+    !telefono ||
+    !departamento ||
+    !username ||
+    !password
+  ) {
     return res.status(400).json({ message: "Faltan campos obligatorios" });
   }
 
   try {
-    const result = await pool.query(
-      "INSERT INTO usuarios (username, password, rol, paterno, materno, email) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [user, password, "consulta", paterno, materno, email]
-    );
-
-    return res.json({
-      message: "Usuario registrado exitosamente (Paso 1)",
-      user: result.rows[0],
-    });
-  } catch (err) {
-    console.error("Error al registrar:", err);
-    res.status(500).json({ message: "Error al registrar usuario" });
-  }
-});
-
-router.post("/register2", async (req, res) => {
-  const { curp, rfc, num, dep } = req.body;
-
-  console.log("Datos recibidos en /register/detalles:", req.body);
-
-  try {
-    if (!curp || !rfc || !num || !dep) {
-      return res
-        .status(400)
-        .json({ message: "Todos los campos son obligatorios." });
-    }
-
+    // Verificar duplicados
     const check = await pool.query(
-      "SELECT * FROM usuarios WHERE curp = $1 OR rfc = $2",
-      [curp, rfc]
+      "SELECT * FROM usuarios WHERE curp=$1 OR rfc=$2 OR username=$3",
+      [curp, rfc, username]
     );
+
     if (check.rows.length > 0) {
       return res
         .status(409)
-        .json({ message: "Ya existe un usuario con ese CURP o RFC." });
+        .json({ message: "CURP, RFC o Usuario ya registrados" });
     }
 
     const result = await pool.query(
-      "INSERT INTO usuarios (curp, rfc, telefono, departamento, rol) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [curp, rfc, num, dep, "consulta"]
+      `INSERT INTO usuarios 
+   (username, password, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento)
+   VALUES ($1,$2,'consulta',$3,$4,$5,$6,$7,$8,$9,$10) 
+   RETURNING *`,
+      [
+        username, // $1
+        password, // $2
+        nombre, // $3
+        paterno, // $4
+        materno, // $5
+        email, // $6
+        curp, // $7
+        rfc, // $8
+        telefono, // $9
+        departamento, // $10
+      ]
     );
 
-    const nuevoUsuario = result.rows[0];
     return res.status(201).json({
-      message: "Usuario registrado correctamente",
-      user: {
-        id: nuevoUsuario.id,
-        curp: nuevoUsuario.curp,
-        rfc: nuevoUsuario.rfc,
-        telefono: nuevoUsuario.telefono,
-        departamento: nuevoUsuario.departamento,
-        rol: nuevoUsuario.rol,
-      },
-    });
-  } catch (error) {
-    console.error("Error al registrar usuario:", error);
-    res.status(500).json({ message: "Error en el servidor." });
-  }
-});
-
-router.post("/register3", async (req, res) => {
-  const { username, password } = req.body;
-
-  console.log("Datos recibidos en /register3:", req.body);
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Faltan campos obligatorios" });
-  }
-
-  try {
-    const checkUser = await pool.query(
-      "SELECT * FROM usuarios WHERE username = $1",
-      [username]
-    );
-    if (checkUser.rows.length > 0) {
-      return res
-        .status(409)
-        .json({ message: "El nombre de usuario ya existe." });
-    }
-
-    const result = await pool.query(
-      "UPDATE usuarios SET username = $1, password = $2 WHERE username IS NULL RETURNING *",
-      [username, password]
-    );
-
-    if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No se encontró un usuario para actualizar." });
-    }
-
-    return res.json({
-      message: "Cuenta creada correctamente",
+      message: "Usuario registrado exitosamente",
       user: result.rows[0],
     });
-  } catch (err) {
-    console.error("Error en /register3:", err);
-    res.status(500).json({ message: "Error al registrar el usuario." });
+  } catch (error) {
+    console.error("Error al registrar:", error);
+    return res.status(500).json({ message: "Error del servidor" });
   }
 });
 
@@ -167,10 +121,11 @@ router.get("/buscarUsuario", async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT id, username, rol, paterno, materno, email, curp, rfc, telefono, departamento
+      `SELECT id, username, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento
        FROM usuarios
        WHERE 
         username ILIKE $1 || '%'
+        OR nombre ILIKE $1 || '%'
         OR paterno ILIKE $1 || '%'
         OR materno ILIKE $1 || '%'
         OR email ILIKE $1 || '%'
@@ -196,7 +151,6 @@ router.post("/contrasenaOlvido", async (req, res) => {
   }
 
   try {
-    // Buscar usuario por email
     const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [
       email,
     ]);

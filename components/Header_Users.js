@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Text, TouchableOpacity, Modal, Pressable } from "react-native";
+import { View, Text, TouchableOpacity, Modal, Pressable, Alert } from "react-native";
 import {
   MaterialIcons,
   FontAwesome5,
@@ -14,6 +14,7 @@ export default function Header_User() {
   const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [userData, setUserData] = useState(null);
+  const aviso = "Funcionalidad disponible en la aplicación web.";
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -36,18 +37,8 @@ export default function Header_User() {
         return [
           {
             icon: <MaterialIcons name="group" size={22} color="#27646B" />,
-            text: "Gestionar usuarios",
+            text: "Consultar Usuarios",
             action: () => navigation.navigate("GestionUsuarios"),
-          },
-          {
-            icon: <MaterialIcons name="person-add" size={22} color="#27646B" />,
-            text: "Agregar usuario",
-            action: () => navigation.navigate("AgregarUsuario"),
-          },
-          {
-            icon: <MaterialIcons name="library-books" size={22} color="#27646B" />,
-            text: "Registro de usuarios",
-            action: () => navigation.navigate("RegistroUsuarios"),
           },
           {
             icon: <MaterialIcons name="folder" size={22} color="#27646B" />,
@@ -66,12 +57,12 @@ export default function Header_User() {
           {
             icon: <FontAwesome5 name="upload" size={20} color="#27646B" />,
             text: "Subir documentos",
-            action: () => navigation.navigate("SubirDocumento"),
+            action: () => Alert.alert("SIGAJ", aviso),
           },
           {
             icon: <MaterialIcons name="edit" size={22} color="#27646B" />,
             text: "Editar archivos",
-            action: () => navigation.navigate("EditarArchivos"),
+            action: () => Alert.alert("SIGAJ", aviso),
           },
           {
             icon: <MaterialIcons name="message" size={22} color="#27646B" />,

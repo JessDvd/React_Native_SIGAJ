@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -15,7 +15,7 @@ export default function Consulta() {
   const [ordenSeleccionado, setOrdenSeleccionado] = useState("Orden alfabeto (a-z)");
   const [tiempoSeleccionado, setTiempoSeleccionado] = useState("Más recientes");
 
-  const [archivos, setArchivos] = useState([
+  const [archivos] = useState([
     { id: "001", nombre: "Reporte_juicio", usuario: "Juan Perez", fecha: "2025-11-01" },
     { id: "002", nombre: "Fecha_Juicio", usuario: "Pedro Rodriguez", fecha: "2025-11-02" },
     { id: "003", nombre: "Citatorio", usuario: "Roberto Diaz", fecha: "2025-11-03" },

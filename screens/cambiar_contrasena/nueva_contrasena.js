@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, ScrollView, Modal } from "react-native";
-import React, { useState } from "react";
+import { useState } from "react";
 import Header from "../../components/Header_Users";
 import Styles from "../../styles/consulta.style";
 import Input from "../../components/inputs";
-import Styles_cotrasena from "../../styles/nuevaContrasena/style";
+import Styles_contrasena from "../../styles/nuevaContrasena/style";
 
 export default function CambiarContrasena() {
   const [username, setUsername] = useState("");
@@ -24,11 +24,11 @@ export default function CambiarContrasena() {
   return (
     <View style={Styles.container}>
       <Header aviso="SIGAJ" nombre="Cambiar contraseña" />
-      <ScrollView contentContainerStyle={Styles_cotrasena.scrollContainer}>
-        <View style={Styles_cotrasena.card}>
-          <Text style={Styles_cotrasena.title}>Cambiar Contraseña</Text>
+      <ScrollView contentContainerStyle={Styles_contrasena.scrollContainer}>
+        <View style={Styles_contrasena.card}>
+          <Text style={Styles_contrasena.title}>Cambiar Contraseña</Text>
 
-          <Text style={Styles_cotrasena.subtitle}>
+          <Text style={Styles_contrasena.subtitle}>
             Por favor, ingrese su nombre de usuario, contraseña antiguo y la
             nueva con cuidado!{" "}
           </Text>
@@ -54,10 +54,10 @@ export default function CambiarContrasena() {
           />
 
           <TouchableOpacity
-            style={Styles_cotrasena.button}
+            style={Styles_contrasena.button}
             onPress={handleFinalizar}
           >
-            <Text style={Styles_cotrasena.buttonText}>Finalizar</Text>
+            <Text style={Styles_contrasena.buttonText}>Finalizar</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -68,20 +68,20 @@ export default function CambiarContrasena() {
         animationType="fade"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={Styles_cotrasena.overlay}>
-          <View style={Styles_cotrasena.modalContainer}>
-            <Text style={Styles_cotrasena.modalTitle}>
+        <View style={Styles_contrasena.overlay}>
+          <View style={Styles_contrasena.modalContainer}>
+            <Text style={Styles_contrasena.modalTitle}>
               ¡Contraseña cambiada!
             </Text>
-            <Text style={Styles_cotrasena.modalText}>
+            <Text style={Styles_contrasena.modalText}>
               Tu contraseña ha sido actualizada correctamente.
             </Text>
 
             <TouchableOpacity
-              style={Styles_cotrasena.modalButton}
+              style={Styles_contrasena.modalButton}
               onPress={() => setModalVisible(false)}
             >
-              <Text style={Styles_cotrasena.modalButtonText}>Aceptar</Text>
+              <Text style={Styles_contrasena.modalButtonText}>Aceptar</Text>
             </TouchableOpacity>
           </View>
         </View>

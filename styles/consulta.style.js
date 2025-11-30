@@ -228,9 +228,9 @@ export default StyleSheet.create({
 
   container_text_mensajeria: {
     marginTop: 20,
-    maxWidth: 400,
+    maxWidth: 600,
     width: "100%",
-    alignSelf: "center",
+    alignSelf: "left",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -241,7 +241,7 @@ export default StyleSheet.create({
 
   text_mensajeria: {
     flex: 1,
-    fontSize: 14, //16
+    fontSize: 16, 
     color: "#000",
   },
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import Input from "../components/inputs";
+import styles from "../styles/contrasenaOlvido/olvido";
 
 export default function OlvidarContrasena() {
   const [email, setEmail] = useState("");
@@ -105,63 +105,3 @@ export default function OlvidarContrasena() {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#393939c7",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 20,
-    borderColor: "#27646B",
-    borderWidth: 3,
-    paddingVertical: 30,
-    borderRadius: 35,
-  },
-  logo: {
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
-    backgroundColor: "#27646B",
-    color: "#FFFFFF",
-    paddingVertical: 10,
-    paddingHorizontal: 50,
-    borderRadius: 10,
-  },
-  text: {
-    color: "#fff",
-    textAlign: "center",
-    marginBottom: 20,
-    fontSize: 15,
-  },
-  container_for: {
-    width: "100%",
-    marginBottom: 15,
-  },
-  container_button_group: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  container_button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 40,
-    borderRadius: 10,
-    marginHorizontal: 5,
-  },
-  buttonEnviar: {
-    backgroundColor: "#27646B",
-  },
-  buttonBorrar: {
-    backgroundColor: "#888",
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    marginLeft: 5,
-  },
-});

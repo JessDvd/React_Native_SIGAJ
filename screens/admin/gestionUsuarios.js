@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, FlatList, StyleSheet } from "react-native";
+import { useState } from "react";
+import { View, FlatList } from "react-native";
 import Styles from "../../styles/consulta.style";
 import Header_User from "../../components/Header_Users";
 import Input from "../../components/input_busqueda";
@@ -19,10 +19,21 @@ export default function AdministradorScreen() {
 
     try {
       const response = await fetch(
-        `http://192.168.1.66:3000/api/buscarUsuario?query=${text}`
+        `http://192.168.1.66:3000/api/buscarUsuario?query=${encodeURIComponent(
+          text
+        )}`
       );
 
-      const data = await response.json();
+      const textResponse = await response.text();
+      let data;
+
+      try {
+        data = JSON.parse(textResponse);
+      } catch {
+        console.error("Servidor NO devolvió JSON válido:", textResponse);
+        setResults([]);
+        return;
+      }
 
       if (response.ok) {
         setResults(data);

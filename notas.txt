@@ -1,0 +1,6 @@
+Revisar las IPs y modificar esta ruta:
+
+host    all     all     192.168.1.65/32    md5
+
+ESTE LAN:
+host    all     all     192.168.1.0/24    md5

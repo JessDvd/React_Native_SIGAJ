@@ -3,7 +3,6 @@ import {
   Text,
   TouchableOpacity,
   Alert,
-  KeyboardAvoidingView,
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
@@ -14,6 +13,7 @@ import Headers from "../../components/header";
 import styles from "../../styles/login_style";
 import Input from "../../components/inputs";
 import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterScreen({ navigation }) {
   const [username, setUsername] = useState("");
@@ -32,7 +32,7 @@ export default function RegisterScreen({ navigation }) {
       !materno.trim() ||
       !email.trim()
     ) {
-      Alert.alert("Campos incompletos", "Por favor llena todos los campos.");
+      Alert.alert("SIGAJ", "Campos incompletos. Por favor llena todos los campos.");
       return;
     }
 
@@ -45,59 +45,65 @@ export default function RegisterScreen({ navigation }) {
     }
 
     navigation.navigate("Register2", {
-      username: username.trim(),
-      paterno: paterno.trim(),
-      materno: materno.trim(),
-      email: email.trim(),
+      nombre: username,
+      paterno,
+      materno,
+      email,
     });
   };
 
   return (
-  <KeyboardAvoidingView
-    style={{ flex: 1, backgroundColor: "#757575c7" }}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-  >
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <View style={styles.contenedor}>
-          <Headers titulo="Registrar Usuario" />
+    <SafeAreaView
+      style={{ flex: 1, backgroundColor: "#ffffffc7" }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.contenedor}>
+            <Headers titulo="Registrar Usuario" />
 
-          <Input
-            value={username}
-            onChangeText={setUsername}
-            title="Nombre Completo"
-          />
-          <Input
-            value={paterno}
-            onChangeText={setPaterno}
-            title="Apellido Paterno"
-          />
-          <Input
-            value={materno}
-            onChangeText={setMaterno}
-            title="Apellido Materno"
-          />
-          <Input
-            value={email}
-            onChangeText={setEmail}
-            title="Correo Electrónico (oficial)"
-            keyboardType="email-address"
-            autoCapitalize="none"
-          />
+            <Input
+              value={username}
+              onChangeText={setUsername}
+              title="Nombre Completo"
+            />
+            <Input
+              value={paterno}
+              onChangeText={setPaterno}
+              title="Apellido Paterno"
+            />
+            <Input
+              value={materno}
+              onChangeText={setMaterno}
+              title="Apellido Materno"
+            />
+            <Input
+              value={email}
+              onChangeText={setEmail}
+              title="Correo Electrónico (oficial)"
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
 
-          <TouchableOpacity style={styles.boton_ingresar} onPress={handleFinish}>
-            <Text style={styles.texto_boton}>Siguiente</Text>
-          </TouchableOpacity>
-
-          <View style={styles.nuevo_usuario}>
-            <Text>¿Ya tienes cuenta?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-              <Text style={styles.boton_registrarse}> Ingresa aquí!</Text>
+            <TouchableOpacity
+              style={styles.boton_ingresar}
+              onPress={handleFinish}
+            >
+              <Text style={styles.texto_boton}>Siguiente</Text>
             </TouchableOpacity>
+
+            <View style={styles.nuevo_usuario}>
+              <Text>¿Ya tienes cuenta?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+                <Text style={styles.boton_registrarse}> Ingresa aquí!</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </TouchableWithoutFeedback>
-  </KeyboardAvoidingView>
-);
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </SafeAreaView>
+  );
 }

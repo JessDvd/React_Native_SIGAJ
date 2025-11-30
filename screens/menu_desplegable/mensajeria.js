@@ -8,13 +8,31 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { useState, useEffect } from "react";
 import Header from "../../components/Header_Users";
 import Styles from "../../styles/consulta.style";
 import Input from "../../components/input_text";
 import InputDescripcion from "../../components/input_descripcion";
 import AdjuntarArchivos from "../../components/adjuntar_Archivos";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Mensajeria({ nombreUser = "JessDvd" }) {
+export default function Mensajeria() {
+
+  const [userData, setUserData] = useState(null);
+  const nombre = userData?.username || "Invitado";
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const data = await AsyncStorage.getItem("userData");
+        if (data) setUserData(JSON.parse(data));
+      } catch (err) {
+        console.error("Error al cargar usuario:", err);
+      }
+    };
+    loadUserData();
+  }, []);
+
   const handleBorrar = () => {
     console.log("Borrar Mensaje");
   };
@@ -33,11 +51,7 @@ export default function Mensajeria({ nombreUser = "JessDvd" }) {
         keyboardShouldPersistTaps="handled"
       >
         <View style={Styles.container}>
-          <Header
-            nombre="Jesus David"
-            apellidoP="Cabrales"
-            aviso="Mensajería"
-          />
+          <Header/>
 
           <Image
             source={require("../../assets/img/logo.png")}
@@ -46,7 +60,7 @@ export default function Mensajeria({ nombreUser = "JessDvd" }) {
           />
 
           <View style={Styles.container_text_mensajeria}>
-            <Text style={Styles.text_mensajeria}>De: {nombreUser}</Text>
+            <Text style={Styles.text_mensajeria}>De: {nombre}</Text>
           </View>
 
           <View style={Styles.container_for}>

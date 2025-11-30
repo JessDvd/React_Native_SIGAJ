@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { View, Text, TouchableOpacity, FlatList } from "react-native";
 
@@ -12,7 +12,7 @@ import Header from "../../components/Header_Users";
 
 export default function Consulta() {
   const [mostrarMensajes, setMostrarMensajes] = useState(false);
-  const [mensajeSeleccionado, setMensajeSeleccionado] = useState(null);
+  const [mensajeSeleccionado] = useState(null);
   const mensajes = [
     { id: "1", nombre: "Nombre Apellido", hora: "09:00 am" },
     { id: "2", nombre: "Nombre2 Apellido2", hora: "10:00 am" },
@@ -25,7 +25,6 @@ export default function Consulta() {
     <View style={Styles.container}>
       <Header aviso="Lista de mensajes" nombre="Jesus" apellidoP="Diaz" />
 
-      {/* Sección de mensajes */}
       <TouchableOpacity
         style={StylesList.subHeader}
         onPress={() => setMostrarMensajes(!mostrarMensajes)}

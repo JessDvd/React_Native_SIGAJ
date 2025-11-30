@@ -33,10 +33,18 @@ export default function ModalCompartir({ visible, onClose }) {
                 <Text style={Styles.sectionTitle}>Personas con acceso</Text>
 
                 <View style={Styles.accessBox}>
-                  <View style={Styles.userList}>
+                  <ScrollView
+                    style={Styles.userList}
+                    nestedScrollEnabled={true}
+                  >
                     <Text style={Styles.user}>Usuario 1</Text>
                     <Text style={Styles.user}>Usuario 2</Text>
-                  </View>
+                    <Text style={Styles.user}>Usuario 3</Text>
+                    <Text style={Styles.user}>Usuario 4</Text>
+                    <Text style={Styles.user}>Usuario 5</Text>
+                    <Text style={Styles.user}>Usuario 6</Text>
+                    <Text style={Styles.user}>Usuario 7</Text>
+                  </ScrollView>
                 </View>
               </View>
 

@@ -3,12 +3,11 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: "transparent", 
+    backgroundColor: "transparent",
     justifyContent: "center",
     alignItems: "center",
   },
   modalContainer: {
-    // backgroundColor: "rgba(255, 255, 255, 0.25)",
     backgroundColor: "rgba(255, 255, 255, 0.37)",
     borderRadius: 20,
     padding: 20,
@@ -38,12 +37,18 @@ export default StyleSheet.create({
     marginBottom: 10,
   },
   accessBox: {
+    height: 100,
+    width: "100%",
     borderWidth: 1,
     borderColor: "#27646B",
     borderRadius: 10,
     padding: 10,
-    backgroundColor: "rgba(255,255,255,0.3)",
+    backgroundColor: "#fff",
   },
+  userList: {
+    flexGrow: 0,
+  },
+
   user: {
     color: "#333",
     marginBottom: 4,

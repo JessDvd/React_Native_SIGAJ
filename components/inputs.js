@@ -1,5 +1,4 @@
 import { View, TextInput } from "react-native";
-import React from "react";
 import styles from "../styles/login_style";
 
 export default function Input({

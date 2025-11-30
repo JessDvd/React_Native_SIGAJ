@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Alert,
-  KeyboardAvoidingView,
   ScrollView,
   Platform,
   Keyboard,
@@ -13,8 +12,9 @@ import {
 import Headers from "../../components/header";
 import styles from "../../styles/login_style";
 import Input from "../../components/inputs";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen({ navigation, route }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -30,11 +30,17 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
+    const dataFinal = {
+      ...route.params, 
+      username,
+      password,
+    };
+
     try {
-      const response = await fetch("http://192.168.1.66:3000/api/register3", {
+      const response = await fetch("http://192.168.1.65:3000/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(dataFinal),
       });
 
       const data = await response.json();
@@ -47,6 +53,7 @@ export default function RegisterScreen({ navigation }) {
       Alert.alert("Éxito", data.message, [
         { text: "OK", onPress: () => navigation.navigate("Login") },
       ]);
+
     } catch (error) {
       console.error("Error de conexión:", error);
       Alert.alert("Error", "No se pudo conectar con el servidor.");
@@ -54,7 +61,7 @@ export default function RegisterScreen({ navigation }) {
   };
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView
       style={[{ flex: 1, backgroundColor: "#757575c7" }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
@@ -102,6 +109,6 @@ export default function RegisterScreen({ navigation }) {
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

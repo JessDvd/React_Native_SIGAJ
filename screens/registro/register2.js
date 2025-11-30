@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   Alert,
-  KeyboardAvoidingView,
   ScrollView,
   Platform,
   Keyboard,
@@ -14,8 +13,9 @@ import Headers from "../../components/header";
 import styles from "../../styles/login_style";
 import Input from "../../components/inputs";
 import InputConsulta from "../../components/input_consulta";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen({ navigation, route }) {
   const [curp, setCurp] = useState("");
   const [rfc, setRfc] = useState("");
   const [num, setNum] = useState("");
@@ -27,33 +27,17 @@ export default function RegisterScreen({ navigation }) {
       return;
     }
 
-    try {
-      const response = await fetch("http://192.168.1.66:3000/api/register2", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ curp, rfc, num, dep }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        Alert.alert(
-          "Error",
-          data.message || "No se pudo registrar el usuario."
-        );
-        return;
-      }
-
-      Alert.alert("Éxito", data.message);
-      navigation.navigate("Register3");
-    } catch (error) {
-      console.error("Error de conexión:", error);
-      Alert.alert("Error", "No se pudo conectar con el servidor.");
-    }
+    navigation.navigate("Register3", {
+      ...route.params,
+      curp,
+      rfc,
+      telefono: num,
+      departamento: dep,
+    });
   };
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView
       style={[{ flex: 1, backgroundColor: "#757575c7" }]}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
@@ -81,7 +65,7 @@ export default function RegisterScreen({ navigation }) {
               style={styles.boton_ingresar}
               onPress={handleFinish}
             >
-              <Text style={styles.texto_boton}>Registrar</Text>
+              <Text style={styles.texto_boton}>Siguiente</Text>
             </TouchableOpacity>
 
             <View style={styles.nuevo_usuario}>
@@ -93,6 +77,6 @@ export default function RegisterScreen({ navigation }) {
           </View>
         </ScrollView>
       </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

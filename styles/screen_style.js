@@ -6,7 +6,7 @@ export default StyleSheet.create({
     backgroundColor: "#757575c7",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
   },
 
   contenedor: {
@@ -15,7 +15,7 @@ export default StyleSheet.create({
     borderColor: "#27646B",
     borderWidth: 3,
     paddingVertical: 30,
-    paddingHorizontal: 25,
+    paddingHorizontal: 34,
     alignItems: "center",
     width: "90%",
     maxWidth: 400,
