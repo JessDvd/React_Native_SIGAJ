@@ -65,9 +65,6 @@ export default function SubirArchivoScreen({ route }) {
         body: data, // ❗ sin headers, fetch los pone automáticamente
       });
 
-      const text = await response.text();
-      console.log("RESPUESTA CRUDA:", text);
-
       Alert.alert("Éxito", "Archivo subido correctamente");
       setFile(null);
     } catch (error) {

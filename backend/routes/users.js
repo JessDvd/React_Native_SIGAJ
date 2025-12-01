@@ -203,14 +203,12 @@ router.post("/contrasenaOlvido", async (req, res) => {
   }
 });
 
-
-
 router.post("/subirArchivo", upload.single("archivo"), async (req, res) => {
   try {
-    const { id_usuario } = req.body; 
+    const { id_usuario } = req.body;
     const archivo = req.file;
 
-    console.log("REQ.BODY:", req.body); 
+    console.log("REQ.BODY:", req.body);
 
     if (!archivo) {
       return res.status(400).json({ message: "Debe seleccionar un archivo." });
@@ -228,7 +226,6 @@ router.post("/subirArchivo", upload.single("archivo"), async (req, res) => {
     );
     console.log("ARCHIVOS ENCONTRADOS:", result.rows);
 
-
     res.json({
       message: "Archivo subido correctamente",
       archivo: result.rows[0],
@@ -239,53 +236,23 @@ router.post("/subirArchivo", upload.single("archivo"), async (req, res) => {
   }
 });
 
+// GET /api/archivos
 router.get("/archivos", async (req, res) => {
   try {
-    const result = await pool.query(`
-      SELECT 
-        a.id_archivos AS id,
-        a.nombre,
-        a.fecha,
-        'http://192.168.1.65:3000' || a.url AS url,  -- << URL completa
-        u.nombre || ' ' || u.paterno AS usuario
-      FROM archivos a
-      LEFT JOIN usuarios u ON a.id_usuario = u.id
-      ORDER BY a.fecha DESC;
-    `);
+    const result = await pool.query(
+      `SELECT a.id_archivos, a.nombre, a.fecha,
+          CONCAT('http://192.168.1.65:3000', a.url) AS url,
+          u.username AS usuario
+   FROM archivos a
+   LEFT JOIN usuarios u ON a.id_usuario = u.id
+   ORDER BY a.fecha DESC`
+    );
+
     res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al obtener archivos" });
+  } catch (error) {
+    console.error("Error obteniendo archivos:", error);
+    res.status(500).json({ message: "Error en el servidor" });
   }
 });
-
-// POST /api/compartirArchivo
-// router.post("/compartirArchivo", async (req, res) => {
-//   const { id_archivo, usuarios } = req.body; // usuarios = array de IDs
-//   if (!id_archivo || !usuarios || !usuarios.length) {
-//     return res.status(400).json({ message: "Faltan datos" });
-//   }
-
-//   try {
-//     for (const id_usuario of usuarios) {
-//       // Insertar en archivos compartidos
-//       await pool.query(
-//         "INSERT INTO archivos_compartidos (id_archivo, id_usuario_destino) VALUES ($1, $2)",
-//         [id_archivo, id_usuario]
-//       );
-
-//       // Crear notificación
-//       await pool.query(
-//         "INSERT INTO notificaciones (id_usuario, mensaje) VALUES ($1, $2)",
-//         [id_usuario, `Se te ha compartido un archivo (ID: ${id_archivo})`]
-//       );
-//     }
-
-//     res.json({ message: "Archivo compartido correctamente" });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Error compartiendo archivo" });
-//   }
-// });
 
 export default router;

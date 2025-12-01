@@ -19,15 +19,18 @@ export default function Consulta({ navigation }) {
   const [archivos, setArchivos] = useState([]);
 
   const fetchArchivos = async () => {
-    try {
-      const response = await fetch("http://192.168.1.65:3000/api/archivos");
-      const data = await response.json();
-      setArchivos(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.log("Error cargando archivos:", error);
-      setArchivos([]);
-    }
-  };
+  try {
+    const response = await fetch("http://192.168.1.65:3000/api/archivos");
+    const text = await response.text(); // <-- ver el contenido crudo
+    console.log("Respuesta cruda del servidor:", text);
+
+    const data = JSON.parse(text); // Esto puede seguir dando error si no es JSON
+    setArchivos(Array.isArray(data) ? data : []);
+  } catch (error) {
+    console.log("Error cargando archivos:", error);
+  }
+};
+
 
   useEffect(() => {
     fetchArchivos();
