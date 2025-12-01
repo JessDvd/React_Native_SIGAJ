@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/api", usersRoutes);
+app.use("/uploads", express.static("uploads"));
 
 app.listen(PORT, "0.0.0.0", () =>
   console.log(`Servidor escuchando en http://192.168.1.65:${PORT}`)

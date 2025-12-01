@@ -61,3 +61,5 @@ Mi configuracion de postgresql ->
 hostname: localhost //CAMBIAR
 port: 5432
 username: postgres
+
+npm install multer

@@ -8,19 +8,30 @@ import Options from "../components/options";
 import TablaArchivos from "../components/tabla_archivos";
 import Input from "../components/input_busqueda";
 
-export default function Consulta() {
+export default function Consulta({ navigation }) {
   const [rol, setRol] = useState("consulta");
   const [userData, setUserData] = useState(null);
   const [search, setSearch] = useState("");
-  const [ordenSeleccionado, setOrdenSeleccionado] = useState("Orden alfabeto (a-z)");
+  const [ordenSeleccionado, setOrdenSeleccionado] = useState(
+    "Orden alfabeto (a-z)"
+  );
   const [tiempoSeleccionado, setTiempoSeleccionado] = useState("Más recientes");
+  const [archivos, setArchivos] = useState([]);
 
-  const [archivos] = useState([
-    { id: "001", nombre: "Reporte_juicio", usuario: "Juan Perez", fecha: "2025-11-01" },
-    { id: "002", nombre: "Fecha_Juicio", usuario: "Pedro Rodriguez", fecha: "2025-11-02" },
-    { id: "003", nombre: "Citatorio", usuario: "Roberto Diaz", fecha: "2025-11-03" },
-    { id: "004", nombre: "Informe_final", usuario: "Maria Lopez", fecha: "2025-11-04" },
-  ]);
+  const fetchArchivos = async () => {
+    try {
+      const response = await fetch("http://192.168.1.65:3000/api/archivos");
+      const data = await response.json();
+      setArchivos(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.log("Error cargando archivos:", error);
+      setArchivos([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchArchivos();
+  }, []);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -43,42 +54,67 @@ export default function Consulta() {
 
     if (search.trim()) {
       const query = search.toLowerCase();
-      filtered = filtered.filter(
-        (item) =>
-          item.id.toLowerCase().includes(query) ||
-          item.nombre.toLowerCase().includes(query) ||
-          item.usuario.toLowerCase().includes(query)
-      );
+      filtered = filtered.filter((item) => {
+        const fechaStr = item.fecha
+          ? new Date(item.fecha).toISOString().split("T")[0]
+          : "";
+        return (
+          (item.id &&
+            item.id
+              .toString()
+              .toLowerCase()
+              .includes(query)) ||
+          (item.nombre && item.nombre.toLowerCase().includes(query)) ||
+          (item.usuario && item.usuario.toLowerCase().includes(query)) ||
+          fechaStr.toLowerCase().includes(query)
+        );
+      });
     }
-
-    filtered.sort((a, b) => {
-      if (ordenSeleccionado === "Orden alfabeto (a-z)") {
-        return a.nombre.localeCompare(b.nombre);
-      } else {
-        return b.nombre.localeCompare(a.nombre);
-      }
-    });
 
     const hoy = new Date();
     switch (tiempoSeleccionado) {
       case "Últimas 24 horas":
         filtered = filtered.filter(
-          (item) => new Date(item.fecha) >= new Date(hoy.getTime() - 24 * 60 * 60 * 1000)
+          (item) =>
+            new Date(item.fecha) >=
+            new Date(hoy.getTime() - 24 * 60 * 60 * 1000)
         );
         break;
       case "Última semana":
         filtered = filtered.filter(
-          (item) => new Date(item.fecha) >= new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000)
+          (item) =>
+            new Date(item.fecha) >=
+            new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000)
         );
         break;
       case "Último mes":
         filtered = filtered.filter(
-          (item) => new Date(item.fecha) >= new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000)
+          (item) =>
+            new Date(item.fecha) >=
+            new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000)
         );
         break;
       default:
         break;
     }
+
+    filtered.sort((a, b) => {
+      if (
+        ["Últimas 24 horas", "Última semana", "Último mes"].includes(
+          tiempoSeleccionado
+        )
+      ) {
+        return new Date(b.fecha) - new Date(a.fecha);
+      }
+      if (tiempoSeleccionado === "Más recientes")
+        return new Date(b.fecha) - new Date(a.fecha);
+      if (tiempoSeleccionado === "Más antiguos")
+        return new Date(a.fecha) - new Date(b.fecha);
+
+      if (ordenSeleccionado === "Orden alfabeto (a-z)")
+        return a.nombre?.localeCompare(b.nombre) || 0;
+      return b.nombre?.localeCompare(a.nombre) || 0;
+    });
 
     return filtered;
   };
@@ -98,7 +134,7 @@ export default function Consulta() {
 
       <View style={Styles.container_busqueda}>
         <Input
-          title="Buscar por ID, nombre o usuario"
+          title="Buscar por nombre de usuario"
           value={search}
           onChangeText={setSearch}
         />
@@ -111,6 +147,7 @@ export default function Consulta() {
           onSelect={setOrdenSeleccionado}
         />
       </View>
+
       <View style={Styles.container_options}>
         <Options
           options={opcionesTiempo}
@@ -119,22 +156,19 @@ export default function Consulta() {
         />
       </View>
 
-      <View style={Styles.container_button_principal}>
-        {rol === "administrador" && (
-          <TouchableOpacity style={Styles.container_button}>
-            <Text style={Styles.button}>Administrar</Text>
-          </TouchableOpacity>
-        )}
-        {rol === "editor" && (
-          <TouchableOpacity style={Styles.container_button}>
-            <Text style={Styles.button}>Subir Archivos</Text>
-          </TouchableOpacity>
-        )}
-        {rol === "consulta" && (
-          <TouchableOpacity style={Styles.container_button}>
-            <Text style={Styles.button}>Consultar</Text>
-          </TouchableOpacity>
-        )}
+      <View style={{ alignItems: "center", marginVertical: 10 }}>
+        <TouchableOpacity
+          style={Styles.container_button}
+          onPress={fetchArchivos}
+        >
+          <Text style={Styles.button}>Recargar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={Styles.container_button}
+          onPress={() => navigation.navigate("SubirArchivos")}
+        >
+          <Text style={Styles.button}>Subir Archivo</Text>
+        </TouchableOpacity>
       </View>
 
       <TablaArchivos data={filtrarArchivos()} />

@@ -13,6 +13,7 @@ import CambiarContrasena from "./screens/cambiar_contrasena/nueva_contrasena";
 import Compartir from "./components/acciones/compartir";
 import GestionUsuarios from "./screens/admin/gestionUsuarios";
 import OlvidarContrasena from "./screens/contrasenaOlvido";
+import SubirArchivos from "./screens/subirArchivos";
 
 const stack = createNativeStackNavigator();
 
@@ -86,6 +87,12 @@ export default function App() {
         <stack.Screen
           name="OlvidarContrasena"
           component={OlvidarContrasena}
+          options={{ headerShown: false }}
+        />
+
+        <stack.Screen
+          name="SubirArchivos"
+          component={SubirArchivos}
           options={{ headerShown: false }}
         />
       </stack.Navigator>

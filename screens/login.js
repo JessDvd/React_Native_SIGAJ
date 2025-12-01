@@ -42,7 +42,7 @@ export default function LoginScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.contenedor}>
-        <Headers titulo="Inicio de Sesión" />
+        <Headers titulo="Iniciar Sesión" />
 
         <Input
           value={username}
