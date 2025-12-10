@@ -19,10 +19,11 @@ export default function AdministradorScreen() {
 
     try {
       const response = await fetch(
-        `http://192.168.1.66:3000/api/buscarUsuario?query=${encodeURIComponent(
+        `http://192.168.1.65:3000/api/buscarUsuario?query=${encodeURIComponent(
           text
         )}`
       );
+      //Cambiar
 
       const textResponse = await response.text();
       let data;

@@ -21,7 +21,7 @@ export default function UsuarioDetalle({ user }) {
           <View style={styles.row}>
             <View style={styles.colLeft}>
               <Text style={styles.label}>Nombre:</Text>
-              <Text style={styles.value}>{user.username}</Text>
+              <Text style={styles.value}>{user.nombre}</Text>
 
               <Text style={styles.label}>Apellido Paterno:</Text>
               <Text style={styles.value}>{user.paterno}</Text>

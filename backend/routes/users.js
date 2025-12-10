@@ -5,6 +5,17 @@ import { v4 as uuidv4 } from "uuid";
 
 const router = express.Router();
 
+const limpiar = (texto) => {
+  return texto
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z]/g, ""); // solo letras
+};
+
+// ------------------------
+// CONFIGURACIÓN SUBIDA
+// ------------------------
 const storage = multer.diskStorage({
   destination: "uploads/",
   filename: (req, file, cb) => {
@@ -29,6 +40,9 @@ const upload = multer({
   },
 });
 
+// ------------------------
+// LOGIN
+// ------------------------
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -65,14 +79,62 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    return res
-      .status(500)
-      .json({ message: "Error en el servidor", user: null });
+    return res.status(500).json({ message: "Error en el servidor" });
   }
 });
 
+// ------------------------
+// GENERADOR DE USUARIOS
+// ------------------------
+async function generarUsuarioUnico(nombreCompleto) {
+  const base = nombreCompleto.trim().toLowerCase().replace(/\s+/g, "");
+  const primerasLetras = base.substring(0, 4);
+
+  let usuario;
+  let existe = true;
+
+  while (existe) {
+    const random = Math.random().toString(36).substring(2, 6);
+    usuario = `${primerasLetras}${random}`;
+
+    const check = await pool.query(
+      "SELECT id FROM usuarios WHERE usuario_generado = $1",
+      [usuario]
+    );
+
+    if (check.rows.length === 0) existe = false;
+  }
+
+  return usuario;
+}
+
+router.post("/generar-usuario", async (req, res) => {
+  try {
+    const { nombre, paterno, materno } = req.body;
+
+    if (!nombre || !paterno || !materno) {
+      return res.status(400).json({
+        message: "Faltan datos: nombre, paterno o materno",
+      });
+    }
+
+    const nombreCompleto = `${nombre} ${paterno} ${materno}`;
+    const usuario_generado = await generarUsuarioUnico(nombreCompleto);
+
+    return res.json({ usuario_generado });
+  } catch (error) {
+    console.error("Error en /generar-usuario:", error);
+    res.status(500).json({ message: "Error generando usuario" });
+  }
+});
+
+// ------------------------
+// REGISTRO (CORREGIDO)
+// ------------------------
 router.post("/register", async (req, res) => {
   const {
+    username, // <-- viene del frontend
+    password,
     nombre,
     paterno,
     materno,
@@ -81,44 +143,21 @@ router.post("/register", async (req, res) => {
     rfc,
     telefono,
     departamento,
-    username,
-    password,
   } = req.body;
 
-  if (
-    !nombre ||
-    !paterno ||
-    !materno ||
-    !email ||
-    !curp ||
-    !rfc ||
-    !telefono ||
-    !departamento ||
-    !username ||
-    !password
-  ) {
-    return res.status(400).json({ message: "Faltan campos obligatorios" });
+  if (!username || !password) {
+    return res.status(400).json({ message: "Username y password requeridos" });
   }
 
   try {
-    const check = await pool.query(
-      "SELECT * FROM usuarios WHERE curp=$1 OR rfc=$2 OR username=$3",
-      [curp, rfc, username]
-    );
-
-    if (check.rows.length > 0) {
-      return res
-        .status(409)
-        .json({ message: "CURP, RFC o Usuario ya registrados" });
-    }
-
     const result = await pool.query(
       `INSERT INTO usuarios 
-   (username, password, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento)
-   VALUES ($1,$2,'consulta',$3,$4,$5,$6,$7,$8,$9,$10) 
-   RETURNING *`,
+        (username, usuario_generado, password, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento)
+        VALUES ($1,$2,$3,'consulta',$4,$5,$6,$7,$8,$9,$10,$11)
+        RETURNING *`,
       [
-        username,
+        username, // usamos el username que ya generó el frontend
+        username, // almacenamos igual en usuario_generado
         password,
         nombre,
         paterno,
@@ -141,15 +180,32 @@ router.post("/register", async (req, res) => {
   }
 });
 
+
+// ------------------------
+// BUSCAR USUARIO (ACTUALIZADO)
+// ------------------------
 router.get("/buscarUsuario", async (req, res) => {
   const query = req.query.query;
 
   try {
     const result = await pool.query(
-      `SELECT id, username, rol, nombre, paterno, materno, email, curp, rfc, telefono, departamento
-       FROM usuarios
-       WHERE 
-        username ILIKE $1 || '%'
+      `SELECT 
+        id,
+        username,
+        usuario_generado,
+        rol,
+        nombre,
+        paterno,
+        materno,
+        email,
+        curp,
+        rfc,
+        telefono,
+        departamento
+      FROM usuarios
+      WHERE 
+        usuario_generado ILIKE $1 || '%'
+        OR username ILIKE $1 || '%'
         OR nombre ILIKE $1 || '%'
         OR paterno ILIKE $1 || '%'
         OR materno ILIKE $1 || '%'
@@ -168,47 +224,13 @@ router.get("/buscarUsuario", async (req, res) => {
   }
 });
 
-router.post("/contrasenaOlvido", async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: "El correo es obligatorio." });
-  }
-
-  try {
-    const result = await pool.query("SELECT * FROM usuarios WHERE email = $1", [
-      email,
-    ]);
-
-    if (result.rows.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No existe un usuario con ese correo." });
-    }
-
-    const user = result.rows[0];
-
-    await pool.query(
-      "INSERT INTO solicitudes_contrasena (usuario_id, email) VALUES ($1, $2)",
-      [user.id, email]
-    );
-
-    return res.json({
-      message:
-        "Solicitud enviada correctamente. El administrador recibirá la notificación.",
-    });
-  } catch (error) {
-    console.error("Error en /contrasenaOlvido:", error);
-    res.status(500).json({ message: "Error en el servidor" });
-  }
-});
-
+// ------------------------
+// SUBIR ARCHIVO
+// ------------------------
 router.post("/subirArchivo", upload.single("archivo"), async (req, res) => {
   try {
     const { id_usuario } = req.body;
     const archivo = req.file;
-
-    console.log("REQ.BODY:", req.body);
 
     if (!archivo) {
       return res.status(400).json({ message: "Debe seleccionar un archivo." });
@@ -220,11 +242,10 @@ router.post("/subirArchivo", upload.single("archivo"), async (req, res) => {
 
     const result = await pool.query(
       `INSERT INTO archivos (id_archivos, nombre, fecha, url, id_usuario)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *`,
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *`,
       [id_archivos, archivo.originalname, fecha, url, id_usuario]
     );
-    console.log("ARCHIVOS ENCONTRADOS:", result.rows);
 
     res.json({
       message: "Archivo subido correctamente",
@@ -236,22 +257,64 @@ router.post("/subirArchivo", upload.single("archivo"), async (req, res) => {
   }
 });
 
-// GET /api/archivos
-router.get("/archivos", async (req, res) => {
+// ------------------------
+router.get("/archivos/:id_usuario", async (req, res) => {
   try {
+    const { id_usuario } = req.params;
+
     const result = await pool.query(
-      `SELECT a.id_archivos, a.nombre, a.fecha,
-          CONCAT('http://192.168.1.65:3000', a.url) AS url,
-          u.username AS usuario
-   FROM archivos a
-   LEFT JOIN usuarios u ON a.id_usuario = u.id
-   ORDER BY a.fecha DESC`
+      `
+      SELECT 
+        a.id_archivos AS id,
+        a.nombre,
+        a.fecha,
+        CONCAT('http://192.168.1.65:3000', a.url) AS url,
+        u.nombre AS usuario
+      FROM archivos a
+      LEFT JOIN usuarios u ON a.id_usuario = u.id
+      WHERE a.id_usuario = $1
+      ORDER BY a.fecha DESC
+      `,
+      [id_usuario]
     );
 
     res.json(result.rows);
   } catch (error) {
-    console.error("Error obteniendo archivos:", error);
+    console.error("Error al obtener archivos:", error);
     res.status(500).json({ message: "Error en el servidor" });
+  }
+});
+
+router.post("/generar-usuario", async (req, res) => {
+  try {
+    const { nombre, apellido_p } = req.body;
+
+    if (!nombre || !apellido_p) {
+      return res.status(400).json({ message: "Faltan datos necesarios." });
+    }
+
+    // Base: primera letra del nombre + apellido paterno limpio
+    const base = limpiar(nombre[0] + apellido_p);
+
+    // Verificar si ya existe el usuario
+    const query = `
+      SELECT username FROM usuarios
+      WHERE username LIKE $1 || '%'
+    `;
+    const result = await pool.query(query, [base]);
+
+    let usuarioGenerado = base;
+
+    if (result.rows.length > 0) {
+      usuarioGenerado = base + result.rows.length; // ej: base2, base3...
+    }
+
+    return res.json({
+      usuario_generado: usuarioGenerado,
+    });
+  } catch (error) {
+    console.log("Error generando usuario:", error);
+    return res.status(500).json({ message: "Error generando usuario." });
   }
 });
 

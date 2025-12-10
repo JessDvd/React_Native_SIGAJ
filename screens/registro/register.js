@@ -12,7 +12,7 @@ import {
 import Headers from "../../components/header";
 import styles from "../../styles/login_style";
 import Input from "../../components/inputs";
-import React, { useState } from "react";
+import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RegisterScreen({ navigation }) {

@@ -12,29 +12,24 @@ export default function Consulta({ navigation }) {
   const [rol, setRol] = useState("consulta");
   const [userData, setUserData] = useState(null);
   const [search, setSearch] = useState("");
-  const [ordenSeleccionado, setOrdenSeleccionado] = useState(
-    "Orden alfabeto (a-z)"
-  );
+
+  const [ordenSeleccionado, setOrdenSeleccionado] = useState("Orden alfabeto (a-z)");
   const [tiempoSeleccionado, setTiempoSeleccionado] = useState("Más recientes");
+
   const [archivos, setArchivos] = useState([]);
 
-  const fetchArchivos = async () => {
+  const fetchArchivos = async (idUsuario) => {
   try {
-    const response = await fetch("http://192.168.1.65:3000/api/archivos");
-    const text = await response.text(); // <-- ver el contenido crudo
-    console.log("Respuesta cruda del servidor:", text);
+    const response = await fetch(`http://192.168.1.65:3000/api/archivos/${idUsuario}`) //Cambiar
 
-    const data = JSON.parse(text); // Esto puede seguir dando error si no es JSON
+    const text = await response.text();
+
+    const data = JSON.parse(text);
     setArchivos(Array.isArray(data) ? data : []);
   } catch (error) {
     console.log("Error cargando archivos:", error);
   }
 };
-
-
-  useEffect(() => {
-    fetchArchivos();
-  }, []);
 
   useEffect(() => {
     const loadUser = async () => {
@@ -44,6 +39,7 @@ export default function Consulta({ navigation }) {
           const parsed = JSON.parse(data);
           setUserData(parsed);
           setRol(parsed.rol);
+          fetchArchivos(parsed.id);
         }
       } catch (err) {
         console.error("Error al cargar userData:", err);
@@ -61,15 +57,12 @@ export default function Consulta({ navigation }) {
         const fechaStr = item.fecha
           ? new Date(item.fecha).toISOString().split("T")[0]
           : "";
+
         return (
-          (item.id &&
-            item.id
-              .toString()
-              .toLowerCase()
-              .includes(query)) ||
-          (item.nombre && item.nombre.toLowerCase().includes(query)) ||
-          (item.usuario && item.usuario.toLowerCase().includes(query)) ||
-          fechaStr.toLowerCase().includes(query)
+          item.nombre?.toLowerCase().includes(query) ||
+          item.usuario?.toLowerCase().includes(query) ||
+          fechaStr.includes(query) ||
+          item.id_archivos?.toLowerCase().includes(query)
         );
       });
     }
@@ -79,44 +72,36 @@ export default function Consulta({ navigation }) {
       case "Últimas 24 horas":
         filtered = filtered.filter(
           (item) =>
-            new Date(item.fecha) >=
-            new Date(hoy.getTime() - 24 * 60 * 60 * 1000)
+            new Date(item.fecha) >= new Date(hoy.getTime() - 24 * 60 * 60 * 1000)
         );
         break;
+
       case "Última semana":
         filtered = filtered.filter(
           (item) =>
-            new Date(item.fecha) >=
-            new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000)
+            new Date(item.fecha) >= new Date(hoy.getTime() - 7 * 24 * 60 * 60 * 1000)
         );
         break;
+
       case "Último mes":
         filtered = filtered.filter(
           (item) =>
-            new Date(item.fecha) >=
-            new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000)
+            new Date(item.fecha) >= new Date(hoy.getTime() - 30 * 24 * 60 * 60 * 1000)
         );
-        break;
-      default:
         break;
     }
 
     filtered.sort((a, b) => {
-      if (
-        ["Últimas 24 horas", "Última semana", "Último mes"].includes(
-          tiempoSeleccionado
-        )
-      ) {
-        return new Date(b.fecha) - new Date(a.fecha);
-      }
       if (tiempoSeleccionado === "Más recientes")
         return new Date(b.fecha) - new Date(a.fecha);
+
       if (tiempoSeleccionado === "Más antiguos")
         return new Date(a.fecha) - new Date(b.fecha);
 
       if (ordenSeleccionado === "Orden alfabeto (a-z)")
-        return a.nombre?.localeCompare(b.nombre) || 0;
-      return b.nombre?.localeCompare(a.nombre) || 0;
+        return a.nombre?.localeCompare(b.nombre);
+
+      return b.nombre?.localeCompare(a.nombre);
     });
 
     return filtered;
@@ -129,6 +114,7 @@ export default function Consulta({ navigation }) {
     "Última semana",
     "Último mes",
   ];
+
   const orden = ["Orden alfabeto (a-z)", "Orden alfabeto (z-a)"];
 
   return (
@@ -137,7 +123,7 @@ export default function Consulta({ navigation }) {
 
       <View style={Styles.container_busqueda}>
         <Input
-          title="Buscar por nombre de usuario"
+          title="Buscar archivo"
           value={search}
           onChangeText={setSearch}
         />
@@ -162,16 +148,17 @@ export default function Consulta({ navigation }) {
       <View style={{ alignItems: "center", marginVertical: 10 }}>
         <TouchableOpacity
           style={Styles.container_button}
-          onPress={fetchArchivos}
+          onPress={() => fetchArchivos(userData.id)}
         >
           <Text style={Styles.button}>Recargar</Text>
         </TouchableOpacity>
-        <TouchableOpacity
+
+        {/* <TouchableOpacity
           style={Styles.container_button}
           onPress={() => navigation.navigate("SubirArchivos")}
         >
           <Text style={Styles.button}>Subir Archivo</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <TablaArchivos data={filtrarArchivos()} />

@@ -52,25 +52,6 @@ export default function Header_User() {
           },
         ];
 
-      case "editor":
-        return [
-          {
-            icon: <FontAwesome5 name="upload" size={20} color="#27646B" />,
-            text: "Subir documentos",
-            action: () => Alert.alert("SIGAJ", aviso),
-          },
-          {
-            icon: <MaterialIcons name="edit" size={22} color="#27646B" />,
-            text: "Editar archivos",
-            action: () => Alert.alert("SIGAJ", aviso),
-          },
-          {
-            icon: <MaterialIcons name="message" size={22} color="#27646B" />,
-            text: "Mensajería",
-            action: () => navigation.navigate("Mensajeria"),
-          },
-        ];
-
       default:
         return [
           {

@@ -25,7 +25,7 @@ export default function OlvidarContrasena() {
 
     try {
       const response = await fetch(
-        "http://192.168.1.66:3000/api/contrasenaOlvido",
+        "http://192.168.1.66:3000/api/contrasenaOlvido", //Cambiar
         {
           method: "POST",
           headers: {

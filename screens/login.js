@@ -1,20 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Text, View, Alert, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Headers from "../components/header";
 import styles from "../styles/screen_style";
 import Input from "../components/inputs";
 
-export default function LoginScreen({ navigation }) {
+export default function LoginScreen({ navigation, route }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    if (route?.params?.newUser) {
+      setUsername(route.params.newUser);
+    }
+  }, [route]);
 
   const handleFinish = async () => {
     if (!username.trim() || !password.trim()) {
       Alert.alert("SIGAJ", "Ingrese el Nombre de Usuario y Contraseña.");
       return;
     }
-
+    //Cambiar la IP por la de su servidor local
     try {
       const response = await fetch("http://192.168.1.65:3000/api/login", {
         method: "POST",
